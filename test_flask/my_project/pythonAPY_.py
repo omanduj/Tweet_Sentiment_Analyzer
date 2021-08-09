@@ -102,12 +102,13 @@ def getTweets_liked_tweets(user_id, bearer_token, amount):
     response = requests.request("GET", "https://api.twitter.com/2/users/{}/liked_tweets?max_results={}".format(user_id, amount), headers=headers)
     return(response.json()["data"])
 
-def main_API_one(url_handle):
-    amount = input("Please enter amount of desired tweets (From 5-100): "  or "5")
-    handle = input("Please input handle of desired user: " or url_handle)
+def main_API_one(url_handle, amount):
+    # amount = input("Please enter amount of desired tweets (From 5-100): "  or "5")
+    # handle = input("Please input handle of desired user: " or url_handle)
+
     # start_at = input("Please enter start date of desired tweets (format as YYYY-MM-DD): " )
     # end_at = input("Please enter end date of desired tweets (format as YYYY-MM-DD): " )
-    url = create_twitter_url(handle)
+    url = create_twitter_url(url_handle)
     bearer_token = get_bearer_token()
     res_json = auth_and_connect(bearer_token, url)
     user_id, username = seperating_tweets(res_json["data"])
@@ -116,13 +117,13 @@ def main_API_one(url_handle):
     return get_sentiment(finished_tweet_collection)
 
     # desired_tweets = getTweets(user_id, bearer_token, amount, start_at, end_at)
-def main_API_two(url_handle):
-    amount = input("Please enter amount of desired tweets (From 5-100): " or "5")
-    handle = input("Please input handle of desired user: " or "url_handle")
+def main_API_two(url_handle, amount):
+    # amount = input("Please enter amount of desired tweets (From 5-100): " or "5")
+    # handle = input("Please input handle of desired user: " or "url_handle")
     # start_at = input("Please enter start date of desired tweets (format as YYYY-MM-DD): " )
     # end_at = input("Please enter end date of desired tweets (format as YYYY-MM-DD): " )
-    url = create_twitter_url(handle)
-    bearer_token = get_config_file()
+    url = create_twitter_url(url_handle)
+    bearer_token = get_bearer_token()
     res_json = auth_and_connect(bearer_token, url)
     user_id, username = seperating_tweets(res_json["data"])
     liked_tweets = getTweets_liked_tweets(user_id, bearer_token, amount)
