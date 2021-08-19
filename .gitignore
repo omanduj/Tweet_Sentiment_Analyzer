@@ -3,3 +3,4 @@ __pycache__/
 .venv/
 .DS_Store
 demofile2.txt
+sentiment_analysis_results.db
