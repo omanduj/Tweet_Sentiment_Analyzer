@@ -4,6 +4,10 @@ import json
 
 
 def base_set_up(username, num_of_tweets, pos_emotion, neg_emotion, neu_emotion, compound_emo):
+    """Purpose: To set up database that will be used to save information returned by service
+       Paramaters: A username, number of desired tweets, and the amount of each emotions
+       Return Value: All the invormation in the database
+    """
     conn = sqlite3.connect("sentiment_analysis_results.db")
     c = conn.cursor()
 
@@ -31,10 +35,14 @@ def base_set_up(username, num_of_tweets, pos_emotion, neg_emotion, neu_emotion, 
     return information
 
 def select_info():
+    """Purpose: To select data that user wants from database
+       Paramaters: None
+       Return Value: The requested information from the database in dictionary format
+    """
     conn = sqlite3.connect("sentiment_analysis_results.db")
     c = conn.cursor()
 
-    requested_info = c.execute("SELECT * FROM sentiment_results WHERE ID IS 1")
+    requested_info = c.execute("SELECT * FROM sentiment_results WHERE ID IS 20")
 
     requested_info = c.fetchall()
     requested_info = list(requested_info)
@@ -46,6 +54,10 @@ def select_info():
     return cleaned_info
 
 def fix_data(information):
+    """Purpose: To properly structure data for easiest use
+       Paramaters: information, the data returned from the database
+       Return Value: done_dictm, a dictionary with the data that is well structured
+    """
     information = list(information[0])
     done_dict = {
                 "username": information[1],
@@ -54,7 +66,7 @@ def fix_data(information):
                 "pos_emotion": information[5],
                 "total_sentiment": information[6]
                 }
-    return(done_dict)
+    return done_dict
 
 def main_DB(username, num_of_tweets, pos_emotion, neg_emotion, neu_emotion, compound_emo):
     information = base_set_up(username, num_of_tweets, pos_emotion, neg_emotion, neu_emotion, compound_emo)

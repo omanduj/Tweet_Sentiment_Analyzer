@@ -6,6 +6,10 @@ import nltk
 import os
 
 def create_twitter_url(handle):
+    """Purpose: To create correctly formatted twitter url
+       Paramaters: handle, the username of the tweet account
+       Return Value: url, a valid twitter user's url
+    """
     max_results = 10
     mrf = "max_results={}".format(max_results)
     q = "query=from:{}".format(handle)
@@ -14,24 +18,39 @@ def create_twitter_url(handle):
     return url
 
 def get_bearer_token():
+    """Purpose: To obtain bearer_token
+       Paramaters: None
+       Return Value: bearer_token to validate connection
+    """
     bearer_token = os.environ.get("BEARER_TOKEN")
     #Done with exort BEARER_TOKEN=XXXXXXXX and import os
         #Gets bearer_token from environment variable
     return bearer_token
-
+    
 def auth_and_connect(bearer_token, url):
+    """Purpose: Authorize and connect to twitter account. This is done via using a bearer token
+                to access the given url
+       Paramaters: bearer_token and url
+       Return Value: response of the get request issued to twitter
+    """
     headers = {"Authorization": "Bearer {}".format(bearer_token)}
     response = requests.request("GET", url, headers=headers)
     return response.json()
 
 def seperating_tweets(data):
+    """Purpose: To structure data returned from twitter
+       Paramaters: data, information returned by twitter get request
+       Return Value: username, the username of the account. user_id, the id associated with that account
+    """
     user_id = data["id"]
     username = data["username"]
     return user_id, username
 
 def getTweets(user_id, bearer_token, amount):
-# def getTweets(user_id, bearer_token, amount, start_at, end_at):
-
+    """Purpose: To obtain tweets with the specified quieries
+       Paramaters: user_id, bearer_token, amount
+       Return Value: information returned from twitter
+    """
     url = "https://api.twitter.com/2/users/{}/tweets".format(user_id)
     headers = {"Authorization": "Bearer {}".format(bearer_token)}
 
@@ -45,10 +64,20 @@ def getTweets(user_id, bearer_token, amount):
               }
 
     response = requests.request("GET", url, headers=headers, params=params)
-    return(response.json()["data"])
+
+    try:
+        return(response.json()["data"])
+    except KeyError:
+        print(response.json())
+        raise
+
 
 
 def get_content(desired_tweets):
+    """Purpose: To obtain tweets and restructure data
+       Paramaters: desired_tweets, all tweets desired to go under analysis
+       Return Value: list of tweets that has been cleaned
+    """
     count = 0
     punctuation= '''!()-[]{};:'"\, <>./?@#$%^&*_~'''
     n = 2
@@ -84,6 +113,10 @@ def get_content(desired_tweets):
     return(cleaned_list)
 
 def get_sentiment(finished_tweet_collection):
+    """Purpose: obtain sentiment on given set of tweets
+       Paramaters: finished_tweet_collection, all desired tweets
+       Return Value: response, the final sentiment analysis
+    """
     all_words_str = ""
     for value in finished_tweet_collection:
         all_words_str = all_words_str + value + " "
@@ -97,12 +130,20 @@ def get_sentiment(finished_tweet_collection):
     return final_analysis
 
 def getTweets_liked_tweets(user_id, bearer_token, amount):
+    """Purpose: obtain sentiment on given set of liked tweets
+       Paramaters: user_id, bearer_token, amount
+       Return Value: response, the final sentiment analysis
+    """
     headers = {"Authorization": "Bearer {}".format(bearer_token)}
 
     response = requests.request("GET", "https://api.twitter.com/2/users/{}/liked_tweets?max_results={}".format(user_id, amount), headers=headers)
     return(response.json()["data"])
 
 def main_API_one(url_handle, amount):
+    """Purpose: To handle requests on the tweets end of the endpoint
+       Paramaters: url_handle, amount
+       Return Value: result of sentiment analyzer
+    """
     # amount = input("Please enter amount of desired tweets (From 5-100): "  or "5")
     # handle = input("Please input handle of desired user: " or url_handle)
 
@@ -118,6 +159,10 @@ def main_API_one(url_handle, amount):
 
     # desired_tweets = getTweets(user_id, bearer_token, amount, start_at, end_at)
 def main_API_two(url_handle, amount):
+    """Purpose: To handle requests on the liked tweets end of the endpoint
+       Paramaters: url_handle, amount
+       Return Value: result of sentiment analyzer
+    """
     # amount = input("Please enter amount of desired tweets (From 5-100): " or "5")
     # handle = input("Please input handle of desired user: " or "url_handle")
     # start_at = input("Please enter start date of desired tweets (format as YYYY-MM-DD): " )
