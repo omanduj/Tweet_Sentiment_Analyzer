@@ -42,7 +42,7 @@ def select_info():
     conn = sqlite3.connect("sentiment_analysis_results.db")
     c = conn.cursor()
 
-    requested_info = c.execute("SELECT * FROM sentiment_results WHERE ID IS 20")
+    requested_info = c.execute("SELECT * FROM sentiment_results WHERE ID = (SELECT MAX(id) FROM sentiment_results)")
 
     requested_info = c.fetchall()
     requested_info = list(requested_info)
